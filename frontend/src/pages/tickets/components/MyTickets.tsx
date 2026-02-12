@@ -1,9 +1,20 @@
-import { ChevronDown, CircleAlert, Menu, Search, SlidersHorizontal } from 'lucide-react';
+import {
+  ChevronDown,
+  ChevronRight,
+  CircleAlert,
+  CircleMinus,
+  CirclePlus,
+  Menu,
+  Search,
+  ClockAlert,
+  SlidersHorizontal,
+} from 'lucide-react';
 import formatDate from '../../../lib/utils/dateFormattter';
 import { motion } from 'motion/react';
 import checkOverdue from '../../../lib/utils/isOverDue';
 import { dummyUsers } from '../../../lib/store/tempData';
 import type { Ticket } from '../../../lib/types/tickets';
+import { useState } from 'react';
 export default function MyTickets({
   tickets,
   selectedTicket,
@@ -15,14 +26,38 @@ export default function MyTickets({
   setSelectedTicket: any;
   setShowOptions: any;
 }) {
+  const [hideMyTickets, setMyTickets] = useState(false);
   const handleToggle = () => {
     setShowOptions((prev: boolean) => !prev);
   };
+  const handleshowTickets = () => {
+    setMyTickets(!hideMyTickets);
+    console.log(hideMyTickets);
+  };
+  const priorityIcon = {
+    low: <CirclePlus className="size-5 text-yellow-600" />,
+    mid: <CircleMinus className="size-5 text-green-800" />,
+    high: <ClockAlert className="size-5 text-red-800" />,
+  };
   return (
-    <div
+    <motion.div
       id="myTickets"
-      className="z-150 bg-white border-slate-200 border-r rounded-tl-2xl max-w-1/5 ticketShadow"
+      initial={{ width: '22%' }}
+      animate={{ width: hideMyTickets ? '4%' : '22%' }}
+      className="relative bg-white border-slate-200 border-r rounded-tl-2xl max-w-1/5 overflow-hidden ticketShadow"
     >
+      <motion.button
+        animate={{ width: !hideMyTickets ? '4%' : '100%' }}
+        onClick={handleshowTickets}
+        className={`right-0 absolute flex justify-center items-center hover:bg-slate-200 transition-colors duration-200 w-2 h-full ${hideMyTickets ? 'bg-white items-start' : ''} z-150`}
+      >
+        {hideMyTickets && (
+          <span className="bg-slate-400/20 mt-5 p-2 rounded-lg text-slate-400">
+            <ChevronRight />
+          </span>
+        )}
+        {!hideMyTickets && <div className="bg-amber-50 rounded-2xl w-1 h-4">{}</div>}
+      </motion.button>
       <div className="flex justify-between items-center p-3">
         <button onClick={handleToggle} className="rounded-lg text-slate-500">
           <Menu className="size-5" />
@@ -68,13 +103,13 @@ export default function MyTickets({
                   <input
                     type="checkbox"
                     className="bg-white size-4"
-                    defaultChecked={ticket.status === 'closed'}
+                    defaultChecked={ticket.status === 'done'}
                   />
                   <span className="ml-2 text-sm">{ticket.id}</span>
                 </span>
                 <span id="status" className="flex justify-center items-center gap-0.5">
                   {ticket.todoAttached.length > 0 &&
-                  ticket.status !== 'closed' && (
+                  ticket.status !== 'done' && (
                     <button className="bg-green-200 px-2.5 py-0.5 rounded-2xl font-semibold text-green-700/80 text-xs">
                       Done
                     </button>
@@ -83,7 +118,7 @@ export default function MyTickets({
                       Todo{' '}
                     </button>
                   ) : (
-                    ticket.status === 'closed' && (
+                    ticket.status === 'done' && (
                       <button className="bg-green-200 px-2.5 py-0.5 rounded-2xl font-semibold text-green-700/80 text-xs">
                         Done
                       </button>
@@ -94,7 +129,9 @@ export default function MyTickets({
                       <CircleAlert className="size-5" />
                     </button>
                   )}
-                  {ticket.activeUsers.length > 1 ? (
+                  <span>{priorityIcon[ticket.priority || 'mid']}</span>
+
+                  {ticket.activeUsers.length > 0 && (
                     <span className="flex justify-center items-center gap-0.5">
                       <span className="bg-yellow-300 rounded-full size-5 overflow-hidden text-white text-xs">
                         <img src={dummyUsers[0].avatar} alt="" />
@@ -103,8 +140,6 @@ export default function MyTickets({
                         {ticket.activeUsers.length}
                       </span>
                     </span>
-                  ) : (
-                    <span></span>
                   )}
                 </span>
               </div>
@@ -114,7 +149,7 @@ export default function MyTickets({
       ) : (
         <LoadingMyTickets />
       )}
-    </div>
+    </motion.div>
   );
 }
 

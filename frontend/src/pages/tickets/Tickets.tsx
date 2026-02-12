@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { dummyTickets } from '../../lib/store/tempData';
 import MyTickets from './components/MyTickets';
-import { motion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { ChevronDown } from 'lucide-react';
 import type { Ticket } from '../../lib/types/tickets';
 import checkOverdue from '../../lib/utils/isOverDue';
 import SelectedTicket from './components/SelectedTicket';
+import OtherInfo from './components/OtherInfo';
 export default function Tickets() {
   const [tickets, setTickets] = useState<Ticket[]>(dummyTickets);
   const [selectedTicket, setSelectedTicket] = useState(dummyTickets[0].id);
@@ -23,11 +24,11 @@ export default function Tickets() {
   });
   const handleFilteration = (filterName: string) => {
     const filteredTickets = dummyTickets.filter(ticket => {
-      if (filterName === 'Past Due')
-        return ticket.status !== 'closed' && checkOverdue(ticket.dueAt);
+      if (filterName === 'Past Due') return ticket.status !== 'done' && checkOverdue(ticket.dueAt);
       if (filterName === 'High Priority') return ticket.priority === 'high';
       if (filterName === 'Unassigned') return ticket.assignedTo === '';
       if (filterName === 'My Tickets') return ticket;
+      if (filterName === 'All Ticktes') return ticket;
       return ticket.assignedTo.toLowerCase().includes(filterName.toLowerCase());
     });
     setTickets(filteredTickets);
@@ -38,7 +39,7 @@ export default function Tickets() {
   const calculateValues = () => {
     const values = {
       'My Tickets': dummyTickets.length,
-      'Past Due': dummyTickets.filter(t => t.status !== 'closed' && checkOverdue(t.dueAt)).length,
+      'Past Due': dummyTickets.filter(t => t.status !== 'done' && checkOverdue(t.dueAt)).length,
       'High Priority': dummyTickets.filter(t => t.priority === 'high').length,
       Unassigned: dummyTickets.filter(t => t.assignedTo === '').length,
       'All Ticktes': dummyTickets.length,
@@ -54,7 +55,7 @@ export default function Tickets() {
       <motion.div
         animate={{ x: showoptions ? '16svw' : 0 }}
         transition={{ duration: 0.3 }}
-        className="z-10 flex w-full"
+        className="z-10 relative flex w-full"
       >
         <MyTickets
           tickets={tickets}
@@ -63,6 +64,9 @@ export default function Tickets() {
           setShowOptions={setShowOptions}
         />
         <SelectedTicket selectedTicket={tickets.find(t => t.id === selectedTicket)!} />
+        <AnimatePresence mode="wait">
+          <OtherInfo ticket={tickets.find(t => t.id === selectedTicket)!} />
+        </AnimatePresence>
       </motion.div>
     </div>
   );

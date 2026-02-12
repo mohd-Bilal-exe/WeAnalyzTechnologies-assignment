@@ -5,15 +5,16 @@ export interface Ticket {
   createdAt: Date;
   status: TicketStatus;
   dueAt: Date;
-  todoAttached: string[];
+  todoAttached: ToDo[];
   activeUsers: string[];
   data: TicketData;
+  type: TicketType;
 }
 export type TicketMessage = {
   userSender?: string;
-  userReply?: string;
+  userReply?: string[];
   text: string;
-  time: Date;
+  time: Date | null;
   docs: Doc[];
 };
 export type Doc = {
@@ -21,13 +22,14 @@ export type Doc = {
   uploadedDate: Date;
 };
 export type TicketPriority = 'low' | 'mid' | 'high';
-export type TicketStatus = 'open' | 'closed';
+export type TicketStatus = 'done' | 'inProgress' | 'needReview' | 'todo';
 export type TicketFilter = {
   priority?: TicketPriority;
   status?: TicketStatus;
   assignedTo?: string;
   dueDate?: Date;
 };
+export type TicketType = 'bug' | 'feature' | 'task';
 export type TicketData = {
   title: string;
   content: string;
@@ -35,4 +37,12 @@ export type TicketData = {
   labels: string[];
   docs: Doc[];
   messages: TicketMessage[];
+};
+export type ToDo = {
+  todo: string;
+  addedBy: string; //id
+  isDone: boolean;
+  priority: TicketPriority;
+  dueDate: Date;
+  reporter: string; //id
 };

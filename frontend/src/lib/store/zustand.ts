@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { TicketData } from '../types/tickets';
 import type { User } from '../types/Users';
+import { dummyUsers } from './tempData';
 
 interface TicketStore {
   ticketsData: TicketData | null;
@@ -21,7 +22,7 @@ const useZustand = create<TicketStore>()(
             ...newTicketsData,
           },
         })),
-      user: null,
+      user: dummyUsers[0],
       updateUser: (newUser: User) =>
         set({
           user: newUser,
