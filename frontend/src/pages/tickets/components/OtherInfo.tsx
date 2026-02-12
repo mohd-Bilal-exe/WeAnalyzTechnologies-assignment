@@ -19,7 +19,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
 export default function OtherInfo({ ticket }: { ticket: Ticket }) {
   const { user } = useZustand();
-  const [showComponent, setShowComponent] = useState<boolean>(false);
+  const [showComponent, setShowComponent] = useState<boolean>(true);
   const [selectedAssignee, setSelectedAssignee] = useState<string>(ticket.assignedTo || 'u1');
   const [selectedType, setSelectedType] = useState<TicketType>(ticket.type);
   const [selectedReporter, setSelectedReporter] = useState<string>(user?.id || 'u1');
@@ -85,7 +85,7 @@ export default function OtherInfo({ ticket }: { ticket: Ticket }) {
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 300 }}
       transition={{ duration: 0.1 }}
-      className="flex flex-col bg-white border-slate-200 border-l w-1/5 h-full font-sans"
+      className="hidden md:flex flex-col bg-white border-slate-200 border-l w-1/5 h-full font-sans"
     >
       <div className="flex justify-between items-center px-4 py-3 border-slate-200 border-b">
         <DropDown
