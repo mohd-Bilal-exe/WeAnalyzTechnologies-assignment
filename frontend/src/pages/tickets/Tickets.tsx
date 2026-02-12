@@ -10,11 +10,6 @@ import OtherInfo from './components/OtherInfo';
 export default function Tickets() {
   const [tickets, setTickets] = useState<Ticket[]>(dummyTickets);
   const [selectedTicket, setSelectedTicket] = useState(dummyTickets[0].id);
-  const [ticketFilters, setTicketFilters] = useState({
-    priority: 'all',
-    status: 'all',
-    assignee: 'all',
-  });
   const [filteredValues, setFilteredValues] = useState({
     'My Tickets': 0,
     'Past Due': 0,

@@ -158,7 +158,7 @@ export default function OtherInfo({ ticket }: { ticket: Ticket }) {
         <div className="space-y-1.5">
           <div className="flex justify-between items-center">
             <span className="font-bold text-slate-700 text-xs">Assigned To</span>
-            {user?.id !== assignedUser?.id && (
+            {user?.id === assignedUser?.id && (
               <button
                 onClick={() => handleFieldUpdate('assignee', user?.id || 'u1')}
                 className="font-medium text-[11px] text-blue-500 hover:underline"
